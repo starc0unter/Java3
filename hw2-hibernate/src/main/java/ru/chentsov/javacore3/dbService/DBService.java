@@ -103,4 +103,8 @@ public class DBService {
         }
     }
 
+    public void close() {
+        sessionFactory.close();
+    }
+
 }

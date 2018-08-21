@@ -40,14 +40,14 @@ public class App
             dbService.addGoods(i, "good" + i, (i + 1) * 10);
         }
         long end  = System.currentTimeMillis();
-        System.out.println("No butch: " + (end - start));
+        System.out.println("No batch: " + (end - start));
 
         dbService.cleanDB();
         //measuring time for batch SQL query
         long startBatch = System.currentTimeMillis();
         dbService.addGoodsByBatch(10_000);
         long endBatch = System.currentTimeMillis();
-        System.out.println("Butch: " + (endBatch - startBatch));
+        System.out.println("Batch: " + (endBatch - startBatch));
 
         analyzeUserQueries(dbService);
 

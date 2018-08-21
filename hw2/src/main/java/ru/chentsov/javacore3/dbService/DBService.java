@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class DBService {
 
@@ -38,12 +39,12 @@ public class DBService {
         return null;
     }
 
-    public void addGoods(long productId, String title, long price) {
+    public void add(Consumer<DAO> executor) {
         DAO dao = new GoodsDAO(connection);
         try {
             connection.setAutoCommit(false);
             dao.createTable();
-            dao.insertGoods(productId, title, price);
+            executor.accept(dao);
             connection.commit();
         } catch (SQLException e) {
             try{
@@ -60,26 +61,24 @@ public class DBService {
         }
     }
 
-    public void addGoodsByBatch(int batchSize) {
-        DAO dao = new GoodsDAO(connection);
-        try {
-            connection.setAutoCommit(false);
-            dao.createTable();
-            dao.insertGoodsByBatch(batchSize);
-            connection.commit();
-        } catch (SQLException e) {
-            try{
-                connection.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } finally {
+    public void addGoods(long productId, String title, long price) {
+        add(dao -> {
             try {
-                connection.setAutoCommit(true);
+                dao.insertGoods(productId, title, price);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        });
+    }
+
+    public void addGoodsByBatch(int batchSize) {
+        add(dao -> {
+            try {
+                dao.insertGoodsByBatch(batchSize);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public List<GoodsDataSet> get(String title) {

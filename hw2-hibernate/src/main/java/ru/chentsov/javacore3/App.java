@@ -30,6 +30,8 @@ public class App
         getGoodsByPriceRange(dbService, 200, 250);
 
         analyzeUserQueries(dbService);
+
+        dbService.close();
     }
 
     private static void getPriceByTitle(DBService dbService, String title) {
